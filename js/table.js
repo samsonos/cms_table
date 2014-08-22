@@ -8,7 +8,7 @@
 function SamsonCMSTable(table, pager) {
     /** Event: Publish/unpublish material */
     function publish(obj) {
-        // Спросим подтверждение
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (confirm(obj.a('title'))) {
             // Perform ajax request and update JS on success
             s.ajax(s('a.publish_href', obj.parent()).a('href'), init);
@@ -26,9 +26,9 @@ function SamsonCMSTable(table, pager) {
     }
 
     /**
-     * Обновить таблицу материалов
+     * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
      *
-     * @param data Содержание таблицы для обновления
+     * @param data пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
      */
     function init(serverResponse) {
         // If we have responce from server
@@ -86,6 +86,10 @@ function SamsonCMSTable(table, pager) {
         }
     }
 
+    // Ajax request handle
+    var searchRequest;
+    var searchTimeout;
+
     /**
      * Asynchronous material search
      * @param search Search query
@@ -97,18 +101,15 @@ function SamsonCMSTable(table, pager) {
         var cmsnav = 0; //s('#cmsnav_id').val();
         var page = 1;
 
-        // Ajax request handle
-        var request;
-        var timeout;
-
         // Key up handler
-        search.keyup(function(obj) {
-            if (request == undefined) {
+        search.keyup(function(obj, p, e) {
+            // If we have not send any search request and this is not Enter character
+            if (searchRequest == undefined && e.which != 13) {
                 // Reset timeout on key press
-                if (timeout != undefined) clearTimeout(timeout);
+                if (searchTimeout != undefined) clearTimeout(searchTimeout);
 
                 // Set delayed function
-                timeout = window.setTimeout(function() {
+                searchTimeout = window.setTimeout(function() {
                     // Get search input
                     var keywords = obj.val();
 
@@ -118,12 +119,12 @@ function SamsonCMSTable(table, pager) {
                     search.DOMElement.enabled = false;
 
                     // Perform async request to server for rendering table
-                    request = asyncSearch(cmsnav, keywords, page, function(response) {
+                    searchRequest = asyncSearch(cmsnav, keywords, page, function(response) {
                         // re-render table
                         init(response);
 
                         // Clear request variable
-                        request = undefined;
+                        searchRequest = undefined;
                     });
 
                 }, 1000);
@@ -183,6 +184,11 @@ function SamsonCMSTable(table, pager) {
         // Get search input
         var keywords = searchField.val();
 
+        // Remove possible search timeout
+        clearTimeout(searchTimeout);
+        // Abort current search request
+        searchRequest ? searchRequest.abort() : null;
+
         // Perform async request to server for rendering table
         asyncSearch(0, keywords, 1, function(response) {
             // re-render table
@@ -194,5 +200,4 @@ function SamsonCMSTable(table, pager) {
 
     // Init table
     init();
-
 }
