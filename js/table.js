@@ -99,6 +99,9 @@ function SamsonCMSTable(table, pager) {
         search = s(search);
 
         var cmsnav = 0; //s('#cmsnav_id').val();
+        if (s('#cmsnav_id').length) {
+            cmsnav = s('#cmsnav_id').val();
+        }
         var page = 1;
 
         // Key up handler
