@@ -13,6 +13,8 @@
 	"homepage":"http://samsonos.com/",
     "autoload": {
         "classmap": ["src/"],
-        "samson\\cms\\table": "src/"
+        "psr-0": {
+            "samson\\cms\\table":"src/"
+        }
     }
 }
