@@ -106,7 +106,7 @@ class Table implements \samson\core\iModuleViewable
      * Universal SamsonCMS table render
      * @return string HTML SamsonCMS table
      */
-    public function render( array $db_rows = null)
+    public function render( array $db_rows = null, $module = null)
     {
         // Rows HTML
         $rows = '';
@@ -138,7 +138,7 @@ class Table implements \samson\core\iModuleViewable
         //elapsed('render pages: '.$this->pager->total);
 
         // Render table view
-        return m()
+        return m($module)
             ->view( $this->table_tmpl )
             ->set( $this->pager )
             ->rows( $rows )
