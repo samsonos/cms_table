@@ -54,6 +54,10 @@ class Table implements \samson\core\iModuleViewable
         $this->beforeHandler();
     }
 
+    /**
+     * Query handler after making pagination
+     * @return dbQuery
+     */
     public function beforeHandler()
     {
         return $this->query;
