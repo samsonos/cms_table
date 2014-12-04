@@ -50,6 +50,13 @@ class Table implements \samson\core\iModuleViewable
 
         // Add default query handler for pagination
         if( isset($this->pager) ) $this->query->handler( array($this,'pagination') );
+
+        $this->beforeHandler();
+    }
+
+    public function beforeHandler()
+    {
+        return $this->query;
     }
 
     /**
