@@ -126,7 +126,7 @@ class Table implements \samson\core\iModuleViewable
         if( !isset($db_rows) )	$db_rows = $this->query->exec();
 
         // If we have table rows data
-        if( is_array($db_rows ) )
+        if( is_array($db_rows ) && sizeof($db_rows) )
         {
             // Save quantity of rendering rows
             $this->last_render_count = sizeof($db_rows);
