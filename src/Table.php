@@ -104,7 +104,7 @@ class Table implements \samson\core\iModuleViewable
      */
     public function emptyrow( dbQuery & $query, Pager & $pager = null )
     {
-        return m()->output( $this->empty_tmpl );
+        return m()->view($this->empty_tmpl)->output();
     }
 
     /** Ability to pass object to module view */
