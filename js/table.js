@@ -2,10 +2,14 @@
  *
  * @param table DOM table element
  * @param pager
+ * @param asyncCompleteHandler External handler after async table rendering
  * @constructor
  */
 
-function SamsonCMSTable(table, pager) {
+function SamsonCMSTable(table, pager, asyncCompleteHandler) {
+
+	var completeHandler = asyncCompleteHandler !== undefined ? asyncCompleteHandler : false;
+	
     /** Event: Publish/unpublish material */
     function publish(obj) {
         // ������� �������������
@@ -46,7 +50,10 @@ function SamsonCMSTable(table, pager) {
         } catch (e) {
 
         }
-
+		
+		if (completeHandler) {
+            completeHandler(table, pager);
+        }
 
         // If we have successful event response or no response at all(first init)
         if (!serverResponse || (serverResponse && serverResponse.status)) {
