@@ -15,13 +15,33 @@ function SamsonCMSTable(table, pager, asyncCompleteHandler) {
         // ������� �������������
         if (confirm(obj.a('title'))) {
             // Perform ajax request and update JS on success
-            s.ajax(s('a.publish_href', obj.parent()).a('href'), init);
+            s.ajax(s('a.publish_href', obj.parent()).a('href'), init, FormData, function() {
+                loader.hide();
+            }, function() {
+                // Create generic loader
+                var loader = new Loader(table);
+
+                // Show loader with i18n text and black bg
+                loader.show('', true);
+                return true;
+            });
         }
     }
 
     /** Event: Remove material */
     function remove(obj) {
-        if (confirm(obj.a('title'))) s.ajax(obj.a('href'), init);
+        if (confirm(obj.a('title'))) {
+            s.ajax(obj.a('href'), init, FormData, function() {
+                loader.hide();
+            }, function() {
+                // Create generic loader
+                var loader = new Loader(table);
+
+                // Show loader with i18n text and black bg
+                loader.show('', true);
+                return true;
+            });
+        }
     }
 
     /** Event: Copy material */
