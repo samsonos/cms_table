@@ -100,11 +100,12 @@ class Table implements \samson\core\iModuleViewable
      * Generic SamsonCMS table empty row renderer
      * @param dbQuery 	$query	Query object
      * @param Pager 	$pager	Pagination object
+     * @param string 	$module	Current module name	 
      * @return string Empty HTML SamsonCMS table row
      */
-    public function emptyrow( dbQuery & $query, Pager & $pager = null )
+    public function emptyrow( dbQuery & $query, Pager & $pager = null, $module = null)
     {
-        return m()->view($this->empty_tmpl)->output();
+        return m($module)->view($this->empty_tmpl)->output();
     }
 
     /** Ability to pass object to module view */
@@ -144,7 +145,7 @@ class Table implements \samson\core\iModuleViewable
             }
         }
         // No data found after query, external render specified
-        else $rows .= $this->emptyrow( $this->query, $this->pager );
+        else $rows .= $this->emptyrow($this->query, $this->pager, $module);
 
         //elapsed('render pages: '.$this->pager->total);
 
