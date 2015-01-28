@@ -3,13 +3,14 @@
  * @param table DOM table element
  * @param pager
  * @param asyncCompleteHandler External handler after async table rendering
+ * @param filterForm Form for filtering
  * @constructor
  */
 
-function SamsonCMSTable(table, pager, asyncCompleteHandler) {
+function SamsonCMSTable(table, pager, asyncCompleteHandler, filterForm) {
 
 	var completeHandler = asyncCompleteHandler !== undefined ? asyncCompleteHandler : false;
-	
+
     /** Event: Publish/unpublish material */
     function publish(obj) {
         // ������� �������������
@@ -77,6 +78,7 @@ function SamsonCMSTable(table, pager, asyncCompleteHandler) {
 
         // If we have successful event response or no response at all(first init)
         if (!serverResponse || (serverResponse && serverResponse.status)) {
+            s.trace(table);
             // Add fixed header to materials table
             table.fixedHeader();
 
@@ -98,17 +100,31 @@ function SamsonCMSTable(table, pager, asyncCompleteHandler) {
 
 
             s('a', pager).each(function(obj) {
-                obj.ajaxClick(function(response) {
-                    loader.hide();
-                    init(response);
-                }, function(){
-                    // Create generic loader
-                    var loader = new Loader(table);
+                if (filterForm !== undefined && filterForm.length) {
+                    obj.click(function() {
+                        filterForm.a('action', obj.a('href'));
+                        var loader = new Loader(table);
+                        loader.show('', true);
+                        filterForm.ajaxForm(function(response) {
+                            response = JSON.parse(response);
+                            loader.hide();
+                            init(response);
+                        });
+                        return false;
+                    });
+                } else {
+                    obj.ajaxClick(function(response) {
+                        loader.hide();
+                        init(response);
+                    }, function(){
+                        // Create generic loader
+                        var loader = new Loader(table);
 
-                    // Show loader with i18n text and black bg
-                    loader.show('', true);
-                    return true;
-                });
+                        // Show loader with i18n text and black bg
+                        loader.show('', true);
+                        return true;
+                    });
+                }
             });
         }
     }
