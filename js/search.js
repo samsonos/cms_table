@@ -54,7 +54,7 @@ var sjsSearch = {
                 searchTimeout = window.setTimeout(function () {
 
                     //Disable input
-                    searchField.DOMElement.enabled = false;
+                    searchField.a('disabled', 'disabled');
 
                     var url = searchField.a('controller');
                     if (url[url.length - 1] !== '/') {
@@ -74,6 +74,8 @@ var sjsSearch = {
                     // Perform async request to server for rendering table
                     s.ajax(url, function (response) {
 
+                        searchField.DOMElement.removeAttribute('disabled');
+                        searchField.DOMElement.focus();
                         sentFlag = true;
 
                         // Store current search string as previous
