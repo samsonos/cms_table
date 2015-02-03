@@ -3,14 +3,13 @@
  * @param table DOM table element
  * @param pager
  * @param asyncCompleteHandler External handler after async table rendering
- * @param filterForm Form for filtering
  * @constructor
  */
 
-function SamsonCMSTable(table, pager, asyncCompleteHandler, filterForm) {
+function SamsonCMSTable(table, pager, asyncCompleteHandler) {
 
 	var completeHandler = asyncCompleteHandler !== undefined ? asyncCompleteHandler : false;
-
+	
     /** Event: Publish/unpublish material */
     function publish(obj) {
         // ������� �������������
@@ -78,7 +77,6 @@ function SamsonCMSTable(table, pager, asyncCompleteHandler, filterForm) {
 
         // If we have successful event response or no response at all(first init)
         if (!serverResponse || (serverResponse && serverResponse.status)) {
-            s.trace(table);
             // Add fixed header to materials table
             table.fixedHeader();
 
@@ -100,149 +98,60 @@ function SamsonCMSTable(table, pager, asyncCompleteHandler, filterForm) {
 
 
             s('a', pager).each(function(obj) {
-                if (filterForm !== undefined && filterForm.length) {
-                    obj.click(function() {
-                        filterForm.a('action', obj.a('href'));
-                        var loader = new Loader(table);
-                        loader.show('', true);
-                        filterForm.ajaxForm(function(response) {
-                            response = JSON.parse(response);
-                            loader.hide();
-                            init(response);
-                        });
-                        return false;
-                    });
-                } else {
-                    obj.ajaxClick(function(response) {
-                        loader.hide();
-                        init(response);
-                    }, function(){
-                        // Create generic loader
-                        var loader = new Loader(table);
+                obj.ajaxClick(function(response) {
+                    loader.hide();
+                    init(response);
+                }, function(){
+                    // Create generic loader
+                    var loader = new Loader(table);
 
-                        // Show loader with i18n text and black bg
-                        loader.show('', true);
-                        return true;
-                    });
-                }
+                    // Show loader with i18n text and black bg
+                    loader.show('', true);
+                    return true;
+                });
             });
         }
     }
 
-    // Ajax request handle
-    var searchRequest;
-    var searchTimeout;
 
-    /**
-     * Asynchronous material search
-     * @param search Search query
-     */
-    function material_search(search) {
-        // Safely get object
-        search = s(search);
-
-        var cmsnav = 0; //s('#cmsnav_id').val();
-        if (s('#cmsnav_id').length) {
-            cmsnav = s('#cmsnav_id').val();
-        }
-        var page = 1;
-
-        // Key up handler
-        search.keyup(function(obj, p, e) {
-            // If we have not send any search request and this is not Enter character
-            if (searchRequest == undefined && e.which != 13) {
-                // Reset timeout on key press
-                if (searchTimeout != undefined) clearTimeout(searchTimeout);
-
-                // Set delayed function
-                searchTimeout = window.setTimeout(function() {
-                    // Get search input
-                    var keywords = obj.val();
-
-                    if (keywords.length < 2) keywords = '';
-
-                    // Disable input
-                    search.DOMElement.enabled = false;
-
-                    // Perform async request to server for rendering table
-                    searchRequest = asyncSearch(cmsnav, keywords, page, function(response) {
-                        // re-render table
-                        init(response);
-
-                        // Clear request variable
-                        searchRequest = undefined;
-                    });
-
-                }, 1000);
-            }
-        });
-    }
-
-    /**
-     * Asynchronous request for table search
-     * @param cmsnav    Current selected SamsonCMS navigation identifier
-     * @param keywords  Material search keywords
-     * @param page      Current search page results
-     * @param handler   External handler on ajax success request
-     * @returns Asynchronous request handle
-     */
-    var asyncSearch = function(cmsnav, keywords, page, handler) {
-        // Avoid multiple search requests
-        if (!searchInitiated) {
-            // Set flag
-            searchInitiated = true;
-
-            // Create generic loader
-            var loader = new Loader(table);
-
-            // Show loader with i18n text and black bg
-            loader.show(s('.loader-text').val(), true);
-
-            // Perform async request to server for rendering table
-            return s.ajax(s('input#search').a('controller') + cmsnav + '/' + keywords + '/' + page, function(response) {
-                // re-render table
-                init(response);
-
-                // Call external handler
-                if (handler) {
-                    handler();
-                }
-
-                loader.hide();
-
-                // Release flag
-                searchInitiated = false;
-            });
-        }
-    }
 
     // Cache search field
-    var searchField = s('input#search');
+    //var searchField = s();
 
-    // Flag to preserve multiple search requests
-    var searchInitiated = false;
+    var cmsnav = '0'; //s('#cmsnav_id').val();
+    if (s('#cmsnav_id').val().length) {
+        cmsnav = s('#cmsnav_id').val();
+    }
 
     // Init table live search
-    material_search(searchField);
+    s('input#search').search(new Array(cmsnav), function(){
+        // Create generic loader
+        var loader = new Loader(table);
+        // Show loader with i18n text and black bg
+        loader.show(s('.loader-text').val(), true);
+    }, function(response){
+        loader.hide();
+        init(response);
+    });
 
     // Disable search form submit
-    s('form.search').submit(function() {
-        // Get search input
-        var keywords = searchField.val();
-
-        // Remove possible search timeout
-        clearTimeout(searchTimeout);
-        // Abort current search request
-        searchRequest ? searchRequest.abort() : null;
-
-        // Perform async request to server for rendering table
-        asyncSearch(0, keywords, 1, function(response) {
-            // re-render table
-            init(response);
-        });
-
-        return false;
-    });
+    //s('form.search').submit(function() {
+    //    // Get search input
+    //    var keywords = searchField.val();
+    //
+    //    // Remove possible search timeout
+    //    clearTimeout(searchTimeout);
+    //    // Abort current search request
+    //    searchRequest ? searchRequest.abort() : null;
+    //
+    //    // Perform async request to server for rendering table
+    //    asyncSearch(0, keywords, 1, function(response) {
+    //        // re-render table
+    //        init(response);
+    //    });
+    //
+    //    return false;
+    //});
 
     // Init table
     init();
