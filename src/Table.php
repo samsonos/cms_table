@@ -89,11 +89,12 @@ class Table implements \samson\core\iModuleViewable
      * Generic SamsonCMS table row renderer
      * @param Object 	$db_row DB Row object
      * @param Pager 	$pager	Pagination object
+     * @param string 	$module	Current module name
      * @return string HTML SamsonCMS table row
      */
-    public function row( & $db_row, Pager & $pager = null )
+    public function row(& $db_row, Pager & $pager = null, $module = null)
     {
-        return m()->set( $db_row )->set( $pager )->output( $this->row_tmpl );
+        return m($module)->set($db_row)->set($pager)->output($this->row_tmpl);
     }
 
     /**
@@ -140,7 +141,7 @@ class Table implements \samson\core\iModuleViewable
             foreach( $db_rows as & $db_row )
             {
                 if($this->debug ) elapsed('Rendering row '.$rn++.' of '.$rc.'(#'.$db_row->id.')');
-                $rows .= $this->row( $db_row, $this->pager );
+                $rows .= $this->row($db_row, $this->pager, $module);
                 //catch(\Exception $e){ return e('Error rendering row#'.$rn.' of '.$rc.'(#'.$db_row->id.')'); }
             }
         }
