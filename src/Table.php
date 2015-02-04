@@ -89,11 +89,12 @@ class Table implements \samson\core\iModuleViewable
      * Generic SamsonCMS table row renderer
      * @param Object 	$db_row DB Row object
      * @param Pager 	$pager	Pagination object
+     * * @param string 	$module	Current module name
      * @return string HTML SamsonCMS table row
      */
-    public function row( & $db_row, Pager & $pager = null )
+    public function row(& $db_row, Pager & $pager = null, $module = null)
     {
-        return m()->set( $db_row )->set( $pager )->output( $this->row_tmpl );
+        return m($module)->set($db_row)->set($pager)->output($this->row_tmpl);
     }
 
     /**
