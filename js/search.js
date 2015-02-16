@@ -16,8 +16,6 @@ var sjsSearch = {
         var page = 1;
         // Variable to store timeout value
         var searchTimeout;
-        // Flag to prevent several requests
-        var sentFlag = true;
         // Stores current input
         var searchField = this;
         // Stores previous search string
@@ -40,12 +38,9 @@ var sjsSearch = {
 
             // If we have not send any search request and search string differs from previous and there is enough letters
             if (
-                sentFlag &&
                 prevKeywords !== keywords &&
                 (keywords.length == 0 || keywords.length >= symbolsNumber)
             ) {
-                // set search flag to true
-                sentFlag = false;
 
                 // Reset timeout on key press
                 if (searchTimeout != undefined) clearTimeout(searchTimeout);
@@ -76,7 +71,6 @@ var sjsSearch = {
 
                         searchField.DOMElement.removeAttribute('disabled');
                         searchField.DOMElement.focus();
-                        sentFlag = true;
 
                         // Store current search string as previous
                         prevKeywords = keywords;
