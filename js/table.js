@@ -66,7 +66,7 @@ function SamsonCMSTable(table, pager, asyncCompleteHandler) {
         try {
             // If we have table html - update it
             if (serverResponse.table_html) table.html(serverResponse.table_html);
-            if (serverResponse.pager_html) pager.html(serverResponse.pager_html);
+            if (serverResponse.table_pager) pager.html(serverResponse.table_pager);
         } catch (e) {
 
         }
