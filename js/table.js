@@ -78,7 +78,7 @@ function SamsonCMSTable(table, pager, asyncCompleteHandler) {
         // If we have successful event response or no response at all(first init)
         if (!serverResponse || (serverResponse && serverResponse.status)) {
             // Add fixed header to materials table
-            table.fixedHeader();
+            table.fixedHeader('.table2-header-row', '.table2-body');
 
             // Bind publish event
             s('input#published', table).click(publish, true, true);
