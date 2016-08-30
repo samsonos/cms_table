@@ -3,12 +3,13 @@ namespace samson\cms\table;
 
 use samson\activerecord\dbQuery;
 use samson\pager\Pager;
+use samsonframework\core\RenderInterface;
 
 /**
  * Class for rendering SamsonCMS table
  * @author Vitaly Iegorov <egorov@samsonos.com>
  */
-class Table implements \samson\core\iModuleViewable
+class Table implements RenderInterface
 {
     /**
      * Pagination object
